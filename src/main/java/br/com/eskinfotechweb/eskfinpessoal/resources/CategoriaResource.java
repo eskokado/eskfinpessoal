@@ -3,6 +3,8 @@ package br.com.eskinfotechweb.eskfinpessoal.resources;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +42,7 @@ public class CategoriaResource {
 	}
 
 	@PostMapping
-	public ResponseEntity<Categoria> create(@RequestBody Categoria categoria) {
+	public ResponseEntity<Categoria> create(@Valid @RequestBody Categoria categoria) {
 		Categoria categoriaInsert = categoriaService.insert(categoria);
 
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
@@ -50,7 +52,7 @@ public class CategoriaResource {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Categoria> update(@PathVariable Long id, @RequestBody Categoria categoria) {
+	public ResponseEntity<Categoria> update(@PathVariable Long id, @Valid @RequestBody Categoria categoria) {
 		Categoria categoriaUpdate = categoriaService.update(id, categoria);
 		return ResponseEntity.ok(categoriaUpdate);
 	}
