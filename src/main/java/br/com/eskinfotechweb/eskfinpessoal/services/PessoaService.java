@@ -5,10 +5,12 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.PessoaRepository;
+import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.DataIntegrityException;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -38,5 +40,17 @@ public class PessoaService {
 		BeanUtils.copyProperties(pessoa, pessoaUpdate, "id");
 		
 		return pessoaRepository.save(pessoaUpdate);
+	}
+	
+	public void delete(Long id) {
+		Pessoa pessoa = findById(id);
+		try {
+			pessoaRepository.delete(pessoa);
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new DataIntegrityException("Não é possível excluir porque há entidades relacionadas! Id: " + id
+					+ ", Tipo: " + Pessoa.class.getName());
+
+		}
 	}
 }
