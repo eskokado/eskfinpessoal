@@ -26,4 +26,10 @@ public class PessoaService {
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Pessoa.class.getName()));
 	}
 	
+	public Pessoa insert(Pessoa pessoa) {
+		pessoa.setId(null);
+		Pessoa pessoaInsert = pessoaRepository.save(pessoa);
+		return pessoaInsert;
+	}
+	
 }
