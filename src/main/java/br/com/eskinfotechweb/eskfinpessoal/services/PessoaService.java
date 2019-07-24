@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import br.com.eskinfotechweb.eskfinpessoal.domain.Endereco;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.PessoaRepository;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.DataIntegrityException;
@@ -38,6 +39,20 @@ public class PessoaService {
 	public Pessoa update(Long id, Pessoa pessoa) {
 		Pessoa pessoaUpdate = findById(id);
 		BeanUtils.copyProperties(pessoa, pessoaUpdate, "id");
+		
+		return pessoaRepository.save(pessoaUpdate);
+	}
+	
+	public Pessoa updateAtivo(Long id, Boolean ativo) {
+		Pessoa pessoaUpdate = findById(id);
+		pessoaUpdate.setAtivo(ativo);
+		
+		return pessoaRepository.save(pessoaUpdate);
+	}
+	
+	public Pessoa updateEndereco(Long id, Endereco endereco) {
+		Pessoa pessoaUpdate = findById(id);
+		pessoaUpdate.setEndereco(endereco);
 		
 		return pessoaRepository.save(pessoaUpdate);
 	}

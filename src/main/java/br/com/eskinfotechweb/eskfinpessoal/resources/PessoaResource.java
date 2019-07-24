@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.com.eskinfotechweb.eskfinpessoal.domain.Endereco;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa;
 import br.com.eskinfotechweb.eskfinpessoal.services.PessoaService;
 
@@ -50,6 +51,18 @@ public class PessoaResource {
 	@PutMapping("/{id}")
 	public ResponseEntity<Pessoa> update(@PathVariable Long id, @RequestBody Pessoa pessoa) {
 		Pessoa pessoaUpdate = pessoaService.update(id, pessoa);
+		return ResponseEntity.ok(pessoaUpdate);
+	}
+	
+	@PutMapping("/{id}/ativo")
+	public ResponseEntity<Pessoa> updateAtivo(@PathVariable Long id, @RequestBody Boolean ativo) {
+		Pessoa pessoaUpdate = pessoaService.updateAtivo(id, ativo);
+		return ResponseEntity.ok(pessoaUpdate);
+	}
+	
+	@PutMapping("/{id}/endereco")
+	public ResponseEntity<Pessoa> updateEndereco(@PathVariable Long id, @RequestBody Endereco endereco) {
+		Pessoa pessoaUpdate = pessoaService.updateEndereco(id, endereco);
 		return ResponseEntity.ok(pessoaUpdate);
 	}
 	
