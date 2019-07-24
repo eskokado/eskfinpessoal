@@ -3,6 +3,7 @@ package br.com.eskinfotechweb.eskfinpessoal.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,4 +33,10 @@ public class PessoaService {
 		return pessoaInsert;
 	}
 	
+	public Pessoa update(Long id, Pessoa pessoa) {
+		Pessoa pessoaUpdate = findById(id);
+		BeanUtils.copyProperties(pessoa, pessoaUpdate, "id");
+		
+		return pessoaRepository.save(pessoaUpdate);
+	}
 }
