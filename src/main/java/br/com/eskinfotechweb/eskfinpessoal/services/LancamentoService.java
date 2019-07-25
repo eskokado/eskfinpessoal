@@ -9,9 +9,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento;
+import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.LancamentoRepository;
+import br.com.eskinfotechweb.eskfinpessoal.repositories.PessoaRepository;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.DataIntegrityException;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.ObjectNotFoundException;
+import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.PessoaInexistenteOuInativaException;
 
 @Service
 public class LancamentoService {
@@ -19,6 +22,9 @@ public class LancamentoService {
 	@Autowired
 	private LancamentoRepository lancamentoRepository;
 
+	@Autowired
+	private PessoaRepository pessoaRepository;
+	
 	public List<Lancamento> findAll() {
 		return lancamentoRepository.findAll();
 	}
@@ -28,8 +34,15 @@ public class LancamentoService {
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Lancamento.class.getName()));
 	}
-	
+			
 	public Lancamento insert(Lancamento lancamento) {
+		if (!pessoaRepository.existsById(lancamento.getPessoa().getId())) {
+			throw new PessoaInexistenteOuInativaException("Pessoa Inexistente");			
+		}
+		Pessoa pessoa = pessoaRepository.getOne(lancamento.getPessoa().getId());				
+		if (pessoa.isInativo()) {
+			throw new PessoaInexistenteOuInativaException("Pessoa Inativa");
+		}
 		lancamento.setId(null);
 		Lancamento lancamentoInsert = lancamentoRepository.save(lancamento);
 		return lancamentoInsert;

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.DataIntegrityException;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.ObjectNotFoundException;
+import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.PessoaInexistenteOuInativaException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
@@ -46,12 +47,19 @@ public class ResourceExceptionHandler {
 		StandardError err = new StandardError(System.currentTimeMillis(), HttpStatus.UNPROCESSABLE_ENTITY.value(),
 				"Erro de constraint", e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
-	}		
-		
+	}
+
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<StandardError> validation(HttpMessageNotReadableException e, HttpServletRequest request) {
 		StandardError err = new StandardError(System.currentTimeMillis(), HttpStatus.UNPROCESSABLE_ENTITY.value(),
 				"Erro de constraint", e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
-	}		
+	}
+
+	@ExceptionHandler(PessoaInexistenteOuInativaException.class)
+	public ResponseEntity<StandardError> validation(PessoaInexistenteOuInativaException e, HttpServletRequest request) {
+		StandardError err = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
+				"Pessoa inexistente ou inativa", e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+	}
 }

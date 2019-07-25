@@ -6,10 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "pessoas")
@@ -64,7 +67,7 @@ public class Pessoa {
 		this.endereco = endereco;
 	}
 
-	public Boolean getAtivo() {
+	public Boolean isAtivo() {
 		return ativo;
 	}
 
@@ -72,6 +75,12 @@ public class Pessoa {
 		this.ativo = ativo;
 	}
 
+	@JsonIgnore
+	@Transient
+	public Boolean isInativo() {
+		return !this.isAtivo();
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
