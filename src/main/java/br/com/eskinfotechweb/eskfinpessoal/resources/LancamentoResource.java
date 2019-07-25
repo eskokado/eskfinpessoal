@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,4 +44,9 @@ public class LancamentoResource {
 		return ResponseEntity.created(uri).body(lancamentoInsert);
 	}
 	
+	@PutMapping("/{id}")
+	public ResponseEntity<Lancamento> update(@PathVariable Long id, @RequestBody Lancamento lancamento) {
+		Lancamento lancamentoUpdate = lancamentoService.update(id, lancamento);
+		return ResponseEntity.ok(lancamentoUpdate);
+	}
 }

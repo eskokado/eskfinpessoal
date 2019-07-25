@@ -3,6 +3,7 @@ package br.com.eskinfotechweb.eskfinpessoal.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +31,11 @@ public class LancamentoService {
 		lancamento.setId(null);
 		Lancamento lancamentoInsert = lancamentoRepository.save(lancamento);
 		return lancamentoInsert;
+	}
+	
+	public Lancamento update(Long id, Lancamento lancamento) {
+		Lancamento lancamentoUpdate = findById(id);
+		BeanUtils.copyProperties(lancamento, lancamentoUpdate, "id");
+		return lancamentoRepository.save(lancamentoUpdate);
 	}
 }
