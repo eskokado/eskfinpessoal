@@ -25,4 +25,10 @@ public class LancamentoService {
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Lancamento.class.getName()));
 	}
+	
+	public Lancamento insert(Lancamento lancamento) {
+		lancamento.setId(null);
+		Lancamento lancamentoInsert = lancamentoRepository.save(lancamento);
+		return lancamentoInsert;
+	}
 }
