@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,6 +48,12 @@ public class LancamentoResource {
 		return ResponseEntity.ok(lancamentos);
 	}
 	
+	@GetMapping("/page")
+	public ResponseEntity<Page<Lancamento>> page(LancamentoFilter lancamentoFilter, Pageable pageable) {
+		Page<Lancamento> lancamentos = lancamentoService.page(lancamentoFilter, pageable); 
+		return ResponseEntity.ok(lancamentos);
+	}
+
 	@PostMapping
 	public ResponseEntity<Lancamento> create(@RequestBody Lancamento lancamento) {
 		Lancamento lancamentoInsert = lancamentoService.insert(lancamento);
