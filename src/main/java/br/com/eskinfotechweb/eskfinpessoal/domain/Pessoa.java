@@ -6,7 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "pessoas")
@@ -16,9 +19,11 @@ public class Pessoa {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotNull
+	@NotEmpty
+	@Size(min = 5, max = 120)
 	private String nome;
 	
+	@Valid
 	@Embedded
 	private Endereco endereco;
 	

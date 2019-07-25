@@ -3,6 +3,8 @@ package br.com.eskinfotechweb.eskfinpessoal.resources;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +43,7 @@ public class PessoaResource {
 	}
 
 	@PostMapping
-	public ResponseEntity<Pessoa> create(@RequestBody Pessoa pessoa) {
+	public ResponseEntity<Pessoa> create(@Valid @RequestBody Pessoa pessoa) {
 		Pessoa pessoaInsert = pessoaService.insert(pessoa);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(pessoaInsert.getId())
 				.toUri();
@@ -49,7 +51,7 @@ public class PessoaResource {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Pessoa> update(@PathVariable Long id, @RequestBody Pessoa pessoa) {
+	public ResponseEntity<Pessoa> update(@PathVariable Long id, @Valid @RequestBody Pessoa pessoa) {
 		Pessoa pessoaUpdate = pessoaService.update(id, pessoa);
 		return ResponseEntity.ok(pessoaUpdate);
 	}
@@ -61,7 +63,7 @@ public class PessoaResource {
 	}
 	
 	@PutMapping("/{id}/endereco")
-	public ResponseEntity<Pessoa> updateEndereco(@PathVariable Long id, @RequestBody Endereco endereco) {
+	public ResponseEntity<Pessoa> updateEndereco(@PathVariable Long id, @Valid @RequestBody Endereco endereco) {
 		Pessoa pessoaUpdate = pessoaService.updateEndereco(id, endereco);
 		return ResponseEntity.ok(pessoaUpdate);
 	}

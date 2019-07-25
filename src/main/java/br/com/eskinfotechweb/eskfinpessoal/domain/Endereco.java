@@ -1,16 +1,31 @@
 package br.com.eskinfotechweb.eskfinpessoal.domain;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Embeddable
 public class Endereco {
 
+	@NotEmpty
+	@Size(min = 5, max = 120)
 	public String logradouro;
+
+	@NotEmpty
 	public String numero;
 	public String complemento;
+
+	@NotEmpty
+	@Size(min = 5, max = 120)
 	public String bairro;
+
+	@NotEmpty
 	public String cep;
+
+	@NotEmpty
 	public String cidade;
+
+	@NotEmpty
 	public String estado;
 
 	public Endereco() {

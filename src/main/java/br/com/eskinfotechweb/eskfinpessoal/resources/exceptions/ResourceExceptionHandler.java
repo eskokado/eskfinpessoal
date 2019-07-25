@@ -1,9 +1,11 @@
 package br.com.eskinfotechweb.eskfinpessoal.resources.exceptions;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -39,4 +41,17 @@ public class ResourceExceptionHandler {
 		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
 	}
 
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<StandardError> validation(ConstraintViolationException e, HttpServletRequest request) {
+		StandardError err = new StandardError(System.currentTimeMillis(), HttpStatus.UNPROCESSABLE_ENTITY.value(),
+				"Erro de constraint", e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
+	}		
+		
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<StandardError> validation(HttpMessageNotReadableException e, HttpServletRequest request) {
+		StandardError err = new StandardError(System.currentTimeMillis(), HttpStatus.UNPROCESSABLE_ENTITY.value(),
+				"Erro de constraint", e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
+	}		
 }

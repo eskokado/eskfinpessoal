@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import br.com.eskinfotechweb.eskfinpessoal.domain.enums.TipoLancamento;
 
@@ -22,22 +25,31 @@ public class Lancamento {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@NotEmpty
+	@Size(min = 5, max = 120)
 	private String descricao;
 
+	@NotNull
 	@Column(name = "data_vencimento")
 	private LocalDate dataVencimento;
 
 	@Column(name = "data_pagamento")
 	private LocalDate dataPagamento;
 
+	@NotNull
 	private BigDecimal valor;
+
 	private String observacao;
+	
+	@NotNull
 	private Integer tipo;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "categoria_id")
 	private Categoria categoria;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "pessoa_id")
 	private Pessoa pessoa;
