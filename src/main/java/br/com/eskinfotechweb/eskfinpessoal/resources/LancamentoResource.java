@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento;
+import br.com.eskinfotechweb.eskfinpessoal.repositories.filter.LancamentoFilter;
 import br.com.eskinfotechweb.eskfinpessoal.services.LancamentoService;
 
 @RestController
@@ -37,6 +38,12 @@ public class LancamentoResource {
 	public ResponseEntity<Lancamento> findById(@PathVariable Long id) {
 		Lancamento lancamento = lancamentoService.findById(id);
 		return ResponseEntity.ok(lancamento);
+	}
+	
+	@GetMapping("/search")
+	public ResponseEntity<List<Lancamento>> search(LancamentoFilter lancamentoFilter) {
+		List<Lancamento> lancamentos = lancamentoService.search(lancamentoFilter); 
+		return ResponseEntity.ok(lancamentos);
 	}
 	
 	@PostMapping

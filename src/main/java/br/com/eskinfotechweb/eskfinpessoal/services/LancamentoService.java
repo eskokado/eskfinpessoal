@@ -12,6 +12,7 @@ import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.LancamentoRepository;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.PessoaRepository;
+import br.com.eskinfotechweb.eskfinpessoal.repositories.filter.LancamentoFilter;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.DataIntegrityException;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.ObjectNotFoundException;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.PessoaInexistenteOuInativaException;
@@ -34,7 +35,11 @@ public class LancamentoService {
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Lancamento.class.getName()));
 	}
-			
+	
+	public List<Lancamento> search(LancamentoFilter lancamentoFilter) {
+		return lancamentoRepository.search(lancamentoFilter);
+	}
+	
 	public Lancamento insert(Lancamento lancamento) {
 		if (!pessoaRepository.existsById(lancamento.getPessoa().getId())) {
 			throw new PessoaInexistenteOuInativaException("Pessoa Inexistente");			
