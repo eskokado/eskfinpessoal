@@ -32,7 +32,7 @@ public class CategoriaResource {
 
 	// @CrossOrigin(maxAge = 10, origins = "http://localhost:8000") // TODO: Remover na produção
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
+	// @PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
 	public ResponseEntity<List<Categoria>> findAll() {
 		List<Categoria> categorias = categoriaService.findAll();
 		return ResponseEntity.ok(categorias);
