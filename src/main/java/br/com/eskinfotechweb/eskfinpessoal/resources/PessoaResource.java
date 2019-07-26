@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,18 +32,21 @@ public class PessoaResource {
 	private PessoaService pessoaService;
 
 	@GetMapping
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
 	public ResponseEntity<List<Pessoa>> findAll() {
 		List<Pessoa> pessoas = pessoaService.findAll();
 		return ResponseEntity.ok(pessoas);
 	}
 
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
 	public ResponseEntity<Pessoa> findById(@PathVariable Long id) {
 		Pessoa pessoa = pessoaService.findById(id);
 		return ResponseEntity.ok(pessoa);
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Pessoa> create(@Valid @RequestBody Pessoa pessoa) {
 		Pessoa pessoaInsert = pessoaService.insert(pessoa);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(pessoaInsert.getId())
@@ -51,18 +55,21 @@ public class PessoaResource {
 	}
 
 	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Pessoa> update(@PathVariable Long id, @Valid @RequestBody Pessoa pessoa) {
 		Pessoa pessoaUpdate = pessoaService.update(id, pessoa);
 		return ResponseEntity.ok(pessoaUpdate);
 	}
 	
 	@PutMapping("/{id}/ativo")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Pessoa> updateAtivo(@PathVariable Long id, @RequestBody Boolean ativo) {
 		Pessoa pessoaUpdate = pessoaService.updateAtivo(id, ativo);
 		return ResponseEntity.ok(pessoaUpdate);
 	}
 	
 	@PutMapping("/{id}/endereco")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Pessoa> updateEndereco(@PathVariable Long id, @Valid @RequestBody Endereco endereco) {
 		Pessoa pessoaUpdate = pessoaService.updateEndereco(id, endereco);
 		return ResponseEntity.ok(pessoaUpdate);
@@ -70,6 +77,7 @@ public class PessoaResource {
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ROLE_REMOVER_PESSOA') and #oauth2.hasScope('write')")
 	public void delete(@PathVariable Long id) {
 		pessoaService.delete(id);
 	}

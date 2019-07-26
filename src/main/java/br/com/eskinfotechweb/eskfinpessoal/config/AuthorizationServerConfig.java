@@ -30,12 +30,20 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory()
-			.withClient("eskinfotechweb")
-			.secret(passwordEncoder.encode("3sk1nf0t3chw3b0")) 
-			.scopes("read", "write")
-			.authorizedGrantTypes("password", "refresh_token")
-			.accessTokenValiditySeconds(60 * 30)
-			.refreshTokenValiditySeconds(60 * 60 * 24);
+				.withClient("eskinfotechweb")
+				.secret(passwordEncoder.encode("3sk1nf0t3chw3b0")) 
+				.scopes("read", "write")
+				.authorizedGrantTypes("password", "refresh_token")
+				.accessTokenValiditySeconds(60 * 30)
+				.refreshTokenValiditySeconds(60 * 60 * 24)
+			.and()
+				.withClient("mobile")
+				.secret(passwordEncoder.encode("m0b1l30")) 
+				.scopes("read")
+				.authorizedGrantTypes("password", "refresh_token")
+				.accessTokenValiditySeconds(60 * 30)
+				.refreshTokenValiditySeconds(60 * 60 * 24);
+		
 	}
 
 	@Override

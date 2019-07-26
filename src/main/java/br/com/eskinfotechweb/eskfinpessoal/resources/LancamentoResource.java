@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,18 +44,21 @@ public class LancamentoResource {
 	}
 	
 	@GetMapping("/search")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
 	public ResponseEntity<List<Lancamento>> search(LancamentoFilter lancamentoFilter) {
 		List<Lancamento> lancamentos = lancamentoService.search(lancamentoFilter); 
 		return ResponseEntity.ok(lancamentos);
 	}
 	
 	@GetMapping("/page")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
 	public ResponseEntity<Page<Lancamento>> page(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		Page<Lancamento> lancamentos = lancamentoService.page(lancamentoFilter, pageable); 
 		return ResponseEntity.ok(lancamentos);
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Lancamento> create(@RequestBody Lancamento lancamento) {
 		Lancamento lancamentoInsert = lancamentoService.insert(lancamento);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
@@ -63,6 +67,7 @@ public class LancamentoResource {
 	}
 	
 	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Lancamento> update(@PathVariable Long id, @RequestBody Lancamento lancamento) {
 		Lancamento lancamentoUpdate = lancamentoService.update(id, lancamento);
 		return ResponseEntity.ok(lancamentoUpdate);
@@ -70,6 +75,7 @@ public class LancamentoResource {
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ROLE_REMOVER_LANCAMENTO') and #oauth2.hasScope('write')")
 	public void delete(@PathVariable Long id) {
 		lancamentoService.delete(id);
 	}
