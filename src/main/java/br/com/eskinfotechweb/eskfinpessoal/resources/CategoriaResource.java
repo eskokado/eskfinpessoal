@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,7 @@ public class CategoriaResource {
 	@Autowired
 	private CategoriaService categoriaService;
 
+	// @CrossOrigin(maxAge = 10, origins = "http://localhost:8000") // TODO: Remover na produção
 	@GetMapping
 	public ResponseEntity<List<Categoria>> findAll() {
 		List<Categoria> categorias = categoriaService.findAll();
