@@ -15,6 +15,7 @@ import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.LancamentoRepository;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.PessoaRepository;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.filter.LancamentoFilter;
+import br.com.eskinfotechweb.eskfinpessoal.repositories.lancamentos.projection.ResumoLancamento;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.DataIntegrityException;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.ObjectNotFoundException;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.PessoaInexistenteOuInativaException;
@@ -44,6 +45,10 @@ public class LancamentoService {
 	
 	public Page<Lancamento> page(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		return lancamentoRepository.page(lancamentoFilter, pageable);
+	}
+
+	public Page<ResumoLancamento> resum(LancamentoFilter lancamentoFilter, Pageable pageable) {
+		return lancamentoRepository.resum(lancamentoFilter, pageable);
 	}
 	
 	public Lancamento insert(Lancamento lancamento) {

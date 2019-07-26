@@ -22,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.filter.LancamentoFilter;
+import br.com.eskinfotechweb.eskfinpessoal.repositories.lancamentos.projection.ResumoLancamento;
 import br.com.eskinfotechweb.eskfinpessoal.services.LancamentoService;
 
 @RestController
@@ -57,6 +58,13 @@ public class LancamentoResource {
 		return ResponseEntity.ok(lancamentos);
 	}
 
+	@GetMapping("/resum")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+	public ResponseEntity<Page<ResumoLancamento>> resum(LancamentoFilter lancamentoFilter, Pageable pageable) {
+		Page<ResumoLancamento> resumo = lancamentoService.resum(lancamentoFilter, pageable);
+		return ResponseEntity.ok(resumo);
+	}
+	
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Lancamento> create(@RequestBody Lancamento lancamento) {
