@@ -9,7 +9,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 @Configuration
 @EnableAuthorizationServer
@@ -21,8 +22,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory()
-			.withClient("angular")
-			.secret("@ngul@r0") // @ngul@r0
+			.withClient("eskinfotechweb")
+			.secret("3sk1nf0t3chw3b0") 
 			.scopes("read", "write")
 			.authorizedGrantTypes("password")
 			.accessTokenValiditySeconds(1800);
@@ -32,12 +33,21 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		endpoints
 			.tokenStore(tokenStore())
+			.accessTokenConverter(accessTokenConverter())
 			.authenticationManager(authenticationManager);
 	}
 
 	@Bean
+	public JwtAccessTokenConverter accessTokenConverter() {
+		JwtAccessTokenConverter accessTokenConverter = new JwtAccessTokenConverter();
+		accessTokenConverter.setSigningKey("eskinfotechweb");
+		return accessTokenConverter;
+	}
+	
+	@Bean
 	public TokenStore tokenStore() {
-		return new InMemoryTokenStore();
+//		return new InMemoryTokenStore();
+		return new JwtTokenStore(accessTokenConverter());
 	}
 	
 }

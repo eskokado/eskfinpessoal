@@ -18,7 +18,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	@Autowired
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.inMemoryAuthentication()
-			.withUser("eskokado").password("123456").roles("ADMIN");
+			.withUser("eskokado").password("3sk0k@d00").roles("ADMIN");
 	}
 
 	@Override
