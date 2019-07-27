@@ -52,6 +52,13 @@ public class LancamentoService {
 	}
 	
 	public Lancamento insert(Lancamento lancamento) {
+		validarPessoa(lancamento);
+		lancamento.setId(null);
+		Lancamento lancamentoInsert = lancamentoRepository.save(lancamento);
+		return lancamentoInsert;
+	}
+
+	private void validarPessoa(Lancamento lancamento) {
 		if (!pessoaRepository.existsById(lancamento.getPessoa().getId())) {
 			throw new PessoaInexistenteOuInativaException("Pessoa Inexistente");			
 		}
@@ -59,13 +66,13 @@ public class LancamentoService {
 		if (pessoa.isInativo()) {
 			throw new PessoaInexistenteOuInativaException("Pessoa Inativa");
 		}
-		lancamento.setId(null);
-		Lancamento lancamentoInsert = lancamentoRepository.save(lancamento);
-		return lancamentoInsert;
 	}
 	
 	public Lancamento update(Long id, Lancamento lancamento) {
 		Lancamento lancamentoUpdate = findById(id);
+		if (!lancamento.getPessoa().getId().equals(lancamentoUpdate.getPessoa().getId())) {
+			validarPessoa(lancamento);
+		}
 		BeanUtils.copyProperties(lancamento, lancamentoUpdate, "id");
 		return lancamentoRepository.save(lancamentoUpdate);
 	}
