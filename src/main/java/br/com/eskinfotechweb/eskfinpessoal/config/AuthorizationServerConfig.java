@@ -21,9 +21,9 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import br.com.eskinfotechweb.eskfinpessoal.config.token.CustomTokenEnhancer;
 
-@Profile("oauth-security")
 @Configuration
 @EnableAuthorizationServer
+@Profile("oauth-security")
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
 	@Autowired

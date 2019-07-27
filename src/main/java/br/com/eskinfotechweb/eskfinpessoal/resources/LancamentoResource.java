@@ -33,12 +33,14 @@ public class LancamentoResource {
 	private LancamentoService lancamentoService;
 	
 	@GetMapping
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
 	public ResponseEntity<List<Lancamento>> findAll() {
 		List<Lancamento> lancamentos = lancamentoService.findAll();
 		return ResponseEntity.ok(lancamentos);
 	}
 	
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
 	public ResponseEntity<Lancamento> findById(@PathVariable Long id) {
 		Lancamento lancamento = lancamentoService.findById(id);
 		return ResponseEntity.ok(lancamento);

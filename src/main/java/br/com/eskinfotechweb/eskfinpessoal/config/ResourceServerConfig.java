@@ -12,11 +12,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecurityExpressionHandler;
 
-@Profile("oauth-security")
 @Configuration
 @EnableResourceServer
 //@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Profile("oauth-security")
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 //	@Autowired
@@ -36,7 +36,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers("/categorias").permitAll()
+//				.antMatchers("/categorias").permitAll()
 				.anyRequest().authenticated()
 				.and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
