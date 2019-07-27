@@ -1,7 +1,6 @@
 package br.com.eskinfotechweb.eskfinpessoal.config.token;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
