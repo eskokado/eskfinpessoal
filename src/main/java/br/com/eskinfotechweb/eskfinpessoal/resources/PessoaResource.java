@@ -6,6 +6,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +24,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.eskinfotechweb.eskfinpessoal.domain.Endereco;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa;
+import br.com.eskinfotechweb.eskfinpessoal.repositories.filter.PessoaFilter;
 import br.com.eskinfotechweb.eskfinpessoal.services.PessoaService;
 
 @RestController
@@ -45,6 +48,20 @@ public class PessoaResource {
 		return ResponseEntity.ok(pessoa);
 	}
 
+	@GetMapping("/search")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
+	public ResponseEntity<List<Pessoa>> search(PessoaFilter pessoaFilter) {
+		List<Pessoa> pessoas = pessoaService.search(pessoaFilter);
+		return ResponseEntity.ok(pessoas);
+	}
+	
+	@GetMapping("/page")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
+	public ResponseEntity<Page<Pessoa>> page(PessoaFilter pessoaFilter, Pageable pageable) {
+		Page<Pessoa> pessoas = pessoaService.page(pessoaFilter, pageable);
+		return ResponseEntity.ok(pessoas);
+	}
+	
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Pessoa> create(@Valid @RequestBody Pessoa pessoa) {

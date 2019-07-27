@@ -1,11 +1,14 @@
 package br.com.eskinfotechweb.eskfinpessoal.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Embeddable
-public class Endereco {
+public class Endereco implements Serializable{
+	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
 	@Size(min = 5, max = 120)
