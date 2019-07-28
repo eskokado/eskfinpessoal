@@ -25,6 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento;
 import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaCategoria;
+import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaCategoriaTipo;
 import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaDiaTipo;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.filter.LancamentoFilter;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.lancamentos.projection.ResumoLancamento;
@@ -87,6 +88,15 @@ public class LancamentoResource {
 			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataDe,
 			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataAte) {
 		List<LancamentoEstatisticaDiaTipo> dados = lancamentoService.porDiaTipo(dataDe, dataAte);
+		return ResponseEntity.ok(dados);
+	}
+
+	@GetMapping("/estatisticas/por-categoria-tipo")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+	public ResponseEntity<List<LancamentoEstatisticaCategoriaTipo>> porCategoriaTipo(
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataDe,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataAte) {
+		List<LancamentoEstatisticaCategoriaTipo> dados = lancamentoService.porCategoriaTipo(dataDe, dataAte);
 		return ResponseEntity.ok(dados);
 	}
 
