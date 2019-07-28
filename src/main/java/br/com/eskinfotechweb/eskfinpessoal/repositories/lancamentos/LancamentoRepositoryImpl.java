@@ -1,5 +1,6 @@
 package br.com.eskinfotechweb.eskfinpessoal.repositories.lancamentos;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import br.com.eskinfotechweb.eskfinpessoal.domain.Categoria_;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento_;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa_;
+import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaCategoria;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.filter.LancamentoFilter;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.lancamentos.projection.ResumoLancamento;
 
@@ -168,6 +170,29 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 		}
 
 		return predicates.toArray(new Predicate[predicates.size()]);
+	}
+
+	@Override
+	public List<LancamentoEstatisticaCategoria> porCAtegoria(LocalDate dataDe, LocalDate dataAte) {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<LancamentoEstatisticaCategoria> criteria = builder.createQuery(LancamentoEstatisticaCategoria.class);
+		Root<Lancamento> root = criteria.from(Lancamento.class);
+		
+		criteria.select(builder.construct(
+					LancamentoEstatisticaCategoria.class,
+					root.get(Lancamento_.categoria),
+					builder.sum(root.get(Lancamento_.valor))
+				));
+		
+		criteria.where(
+					builder.greaterThanOrEqualTo(root.get(Lancamento_.dataVencimento), dataDe),
+					builder.lessThanOrEqualTo(root.get(Lancamento_.dataVencimento), dataAte)
+				);
+		criteria.groupBy(root.get(Lancamento_.categoria));
+		
+		TypedQuery<LancamentoEstatisticaCategoria> query = manager.createQuery(criteria);
+		
+		return query.getResultList();
 	}
 
 }
