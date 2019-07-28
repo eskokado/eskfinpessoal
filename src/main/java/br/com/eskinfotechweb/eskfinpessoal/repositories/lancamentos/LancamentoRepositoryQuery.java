@@ -13,7 +13,7 @@ import br.com.eskinfotechweb.eskfinpessoal.repositories.lancamentos.projection.R
 
 public interface LancamentoRepositoryQuery {
 
-	public List<LancamentoEstatisticaCategoria> porCAtegoria(LocalDate dataDe, LocalDate dataAte);
+	public List<LancamentoEstatisticaCategoria> porCategoria(LocalDate dataDe, LocalDate dataAte);
 	
 	public List<Lancamento> search(LancamentoFilter lancamentoFilter);
 	public Page<Lancamento> page(LancamentoFilter lancamentoFilter, Pageable pageable);

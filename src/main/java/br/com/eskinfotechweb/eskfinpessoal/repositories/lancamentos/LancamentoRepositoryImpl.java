@@ -173,7 +173,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 	}
 
 	@Override
-	public List<LancamentoEstatisticaCategoria> porCAtegoria(LocalDate dataDe, LocalDate dataAte) {
+	public List<LancamentoEstatisticaCategoria> porCategoria(LocalDate dataDe, LocalDate dataAte) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<LancamentoEstatisticaCategoria> criteria = builder.createQuery(LancamentoEstatisticaCategoria.class);
 		Root<Lancamento> root = criteria.from(Lancamento.class);

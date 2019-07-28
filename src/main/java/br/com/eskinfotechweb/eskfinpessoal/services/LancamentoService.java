@@ -1,5 +1,6 @@
 package br.com.eskinfotechweb.eskfinpessoal.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa;
+import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaCategoria;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.LancamentoRepository;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.PessoaRepository;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.filter.LancamentoFilter;
@@ -49,6 +51,10 @@ public class LancamentoService {
 
 	public Page<ResumoLancamento> resum(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		return lancamentoRepository.resum(lancamentoFilter, pageable);
+	}
+
+	public List<LancamentoEstatisticaCategoria> porCategoria(LocalDate dataDe, LocalDate dataAte) {
+		return lancamentoRepository.porCategoria(dataDe, dataAte);
 	}
 	
 	public Lancamento insert(Lancamento lancamento) {
