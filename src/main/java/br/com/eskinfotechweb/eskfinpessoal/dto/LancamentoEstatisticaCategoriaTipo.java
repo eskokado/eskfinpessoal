@@ -1,0 +1,47 @@
+package br.com.eskinfotechweb.eskfinpessoal.dto;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import br.com.eskinfotechweb.eskfinpessoal.domain.Categoria;
+import br.com.eskinfotechweb.eskfinpessoal.domain.enums.TipoLancamento;
+
+public class LancamentoEstatisticaCategoriaTipo implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	private Categoria categoria;
+	private Integer tipo;
+	private BigDecimal total;
+	
+	public LancamentoEstatisticaCategoriaTipo(Categoria categoria, TipoLancamento tipo, BigDecimal total) {
+		super();
+		this.categoria = categoria;
+		this.tipo = (tipo == null) ? null : tipo.getCod();
+		this.total = total;
+	}
+
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+
+	public TipoLancamento getTipo() {
+		return TipoLancamento.toEnum(tipo);
+	}
+
+	public void setTipo(TipoLancamento tipo) {
+		this.tipo = tipo.getCod();
+	}
+
+	public BigDecimal getTotal() {
+		return total;
+	}
+
+	public void setTotal(BigDecimal total) {
+		this.total = total;
+	}
+		
+}
