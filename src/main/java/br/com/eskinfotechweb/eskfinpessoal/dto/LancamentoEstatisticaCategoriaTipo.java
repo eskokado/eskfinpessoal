@@ -10,13 +10,13 @@ public class LancamentoEstatisticaCategoriaTipo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Categoria categoria;
-	private Integer tipo;
+	private TipoLancamento tipo;
 	private BigDecimal total;
 	
-	public LancamentoEstatisticaCategoriaTipo(Categoria categoria, TipoLancamento tipo, BigDecimal total) {
+	public LancamentoEstatisticaCategoriaTipo(Categoria categoria, Integer tipo, BigDecimal total) {
 		super();
 		this.categoria = categoria;
-		this.tipo = (tipo == null) ? null : tipo.getCod();
+		this.tipo = TipoLancamento.toEnum(tipo);
 		this.total = total;
 	}
 
@@ -29,11 +29,11 @@ public class LancamentoEstatisticaCategoriaTipo implements Serializable {
 	}
 
 	public TipoLancamento getTipo() {
-		return TipoLancamento.toEnum(tipo);
+		return tipo;
 	}
 
 	public void setTipo(TipoLancamento tipo) {
-		this.tipo = tipo.getCod();
+		this.tipo = tipo;
 	}
 
 	public BigDecimal getTotal() {

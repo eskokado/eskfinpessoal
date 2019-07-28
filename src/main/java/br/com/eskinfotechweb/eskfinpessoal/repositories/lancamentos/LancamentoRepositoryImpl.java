@@ -22,6 +22,7 @@ import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento_;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa_;
 import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaCategoria;
+import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaCategoriaTipo;
 import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaDiaTipo;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.filter.LancamentoFilter;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.lancamentos.projection.ResumoLancamento;
@@ -216,6 +217,30 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 		criteria.groupBy(root.get(Lancamento_.tipo), root.get(Lancamento_.dataVencimento));
 		
 		TypedQuery<LancamentoEstatisticaDiaTipo> query = manager.createQuery(criteria);
+		
+		return query.getResultList();
+	}
+
+	@Override
+	public List<LancamentoEstatisticaCategoriaTipo> porCategoriaTipo(LocalDate dataDe, LocalDate dataAte) {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<LancamentoEstatisticaCategoriaTipo> criteria = builder.createQuery(LancamentoEstatisticaCategoriaTipo.class);
+		Root<Lancamento> root = criteria.from(Lancamento.class);
+
+		criteria.select(builder.construct(
+				LancamentoEstatisticaCategoriaTipo.class,
+				root.get(Lancamento_.categoria),
+				root.get(Lancamento_.tipo),
+				builder.sum(root.get(Lancamento_.VALOR))
+			));
+
+		criteria.where(
+				builder.greaterThanOrEqualTo(root.get(Lancamento_.dataVencimento), dataDe),
+				builder.lessThanOrEqualTo(root.get(Lancamento_.dataVencimento), dataAte)
+			);
+		criteria.groupBy(root.get(Lancamento_.categoria), root.get(Lancamento_.tipo));
+		
+		TypedQuery<LancamentoEstatisticaCategoriaTipo> query = manager.createQuery(criteria);
 		
 		return query.getResultList();
 	}
