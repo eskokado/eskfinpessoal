@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa;
 import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaCategoria;
+import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaDiaTipo;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.LancamentoRepository;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.PessoaRepository;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.filter.LancamentoFilter;
@@ -55,6 +56,10 @@ public class LancamentoService {
 
 	public List<LancamentoEstatisticaCategoria> porCategoria(LocalDate dataDe, LocalDate dataAte) {
 		return lancamentoRepository.porCategoria(dataDe, dataAte);
+	}
+	
+	public List<LancamentoEstatisticaDiaTipo> porDiaTipo(LocalDate dataDe, LocalDate dataAte) {
+		return lancamentoRepository.porDiaTipo(dataDe, dataAte);
 	}
 	
 	public Lancamento insert(Lancamento lancamento) {

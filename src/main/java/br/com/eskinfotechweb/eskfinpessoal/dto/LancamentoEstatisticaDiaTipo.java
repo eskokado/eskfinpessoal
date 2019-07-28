@@ -9,13 +9,13 @@ import br.com.eskinfotechweb.eskfinpessoal.domain.enums.TipoLancamento;
 public class LancamentoEstatisticaDiaTipo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private Integer tipo;
+	private TipoLancamento tipo;
 	private LocalDate dia;
 	private BigDecimal total;
 
-	public LancamentoEstatisticaDiaTipo(TipoLancamento tipo, LocalDate dia, BigDecimal total) {
+	public LancamentoEstatisticaDiaTipo(Integer tipo, LocalDate dia, BigDecimal total) {
 		super();
-		this.tipo = (tipo == null) ? null : tipo.getCod();
+		this.tipo = TipoLancamento.toEnum(tipo);
 		this.dia = dia;
 		this.total = total;
 	}
@@ -29,11 +29,11 @@ public class LancamentoEstatisticaDiaTipo implements Serializable {
 	}
 
 	public TipoLancamento getTipo() {
-		return TipoLancamento.toEnum(tipo);
+		return tipo;
 	}
 
 	public void setTipo(TipoLancamento tipo) {
-		this.tipo = tipo.getCod();
+		this.tipo = tipo;
 	}
 
 	public BigDecimal getTotal() {
