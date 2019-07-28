@@ -1,7 +1,12 @@
 package br.com.eskinfotechweb.eskfinpessoal.services;
 
+import java.io.InputStream;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -16,6 +21,7 @@ import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa;
 import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaCategoria;
 import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaCategoriaTipo;
 import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaDiaTipo;
+import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaPessoa;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.LancamentoRepository;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.PessoaRepository;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.filter.LancamentoFilter;
@@ -23,6 +29,10 @@ import br.com.eskinfotechweb.eskfinpessoal.repositories.lancamentos.projection.R
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.DataIntegrityException;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.ObjectNotFoundException;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.PessoaInexistenteOuInativaException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 public class LancamentoService {
@@ -102,5 +112,23 @@ public class LancamentoService {
 			throw new DataIntegrityException("Não é possível excluir porque há entidades relacionadas! Id: " + id
 					+ ", Tipo: " + Lancamento.class.getName());
 		}
+	}
+	
+	public byte[] relatorioPorPessoa(LocalDate dt_inicio, LocalDate dt_fim) throws Exception {
+		List<LancamentoEstatisticaPessoa> dados = lancamentoRepository.porPessoa(dt_inicio, dt_fim);
+
+		Map<String, Object> parametros = new HashMap<>();
+		parametros.put("DT_INICIO", Date.valueOf(dt_inicio));
+		parametros.put("DT_FIM", Date.valueOf(dt_fim));
+		parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
+
+		InputStream inputStream = this.getClass().getResourceAsStream(
+				"/relatorios/lancamentos-por-pessoas.jasper");
+
+		JasperPrint jasperPrint = JasperFillManager.fillReport(
+				inputStream, parametros, new JRBeanCollectionDataSource(dados));
+
+		return JasperExportManager.exportReportToPdf(jasperPrint);
+
 	}
 }
