@@ -15,6 +15,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.eskinfotechweb.eskfinpessoal.domain.enums.TipoLancamento;
 
 @Entity
@@ -142,6 +144,11 @@ public class Lancamento {
 		this.pessoa = pessoa;
 	}
 
+	@JsonIgnore
+	public boolean isReceita() {
+		return TipoLancamento.RECEITA.equals(TipoLancamento.toEnum(this.tipo));
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
