@@ -1,5 +1,6 @@
 package br.com.eskinfotechweb.eskfinpessoal.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,10 @@ public class UsuarioService {
 	public Usuario findByEmail(String email) {
 		Optional<Usuario> obj = usuarioRepository.findByEmail(email);
 		return obj.orElseThrow(() -> new UsernameNotFoundException("Usuário e/ou senha incorretos"));
+	}
+	
+	public List<Usuario> findByPermissoesDescricao(String permissaoDescricao) {
+		return usuarioRepository.findByPermissoesDescricao(permissaoDescricao);
 	}
 	
 }

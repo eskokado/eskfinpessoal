@@ -10,8 +10,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -19,7 +17,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento;
-import br.com.eskinfotechweb.eskfinpessoal.services.LancamentoService;
+import br.com.eskinfotechweb.eskfinpessoal.domain.Usuario;
 
 @Component
 public class Mailer {
@@ -30,8 +28,8 @@ public class Mailer {
 	@Autowired
 	private TemplateEngine thymelead;
 	
-	@Autowired
-	private LancamentoService lancamentoService;
+	//@Autowired
+	//private LancamentoService lancamentoService;
 	
 //	@EventListener
 //	private void teste(ApplicationReadyEvent event) {
@@ -43,21 +41,36 @@ public class Mailer {
 //		System.out.println("Terminado o envio de e-mail...");
 //	}
 	
-	@EventListener
-	private void teste(ApplicationReadyEvent evend) {
+//	@EventListener
+//	private void teste(ApplicationReadyEvent evend) {
+//		String template = "mail/aviso-lancamentos-vencidos.html";
+		
+//		List<Lancamento> lista = lancamentoService.findAll();
+		
+//		Map<String, Object> variaveis = new HashMap<>();
+//		variaveis.put("lancamentos", lista);
+		
+//		this.enviarEmail(
+//				"edsonskok@gmail.com", 
+//				Arrays.asList("eskokado@gmail.com"), 
+//				"Testando Thymeleaf", template, variaveis);
+		
+//		System.out.println("Terminado o envio de e-mail (Thymelead)...");
+//	}
+	
+	public void avisarSobreLancamentosVencidos(List<Lancamento> vencidos, List<Usuario> destinatarios) {
 		String template = "mail/aviso-lancamentos-vencidos.html";
-		
-		List<Lancamento> lista = lancamentoService.findAll();
-		
+
 		Map<String, Object> variaveis = new HashMap<>();
-		variaveis.put("lancamentos", lista);
+		variaveis.put("lancamentos", vencidos);
+
+		// List<String> emails = destinatarios.stream().map(u -> u.getEmail()).collect(Collectors.toList());
+
+		List<String> emails = Arrays.asList("eskokado@gmail.com");
 		
-		this.enviarEmail(
-				"edsonskok@gmail.com", 
-				Arrays.asList("eskokado@gmail.com"), 
-				"Testando Thymeleaf", template, variaveis);
+		this.enviarEmail("edsonskok@gmail.com", emails, "Lançamentos vencidos", template, variaveis);
 		
-		System.out.println("Terminado o envio de e-mail (Thymelead)...");
+		System.out.println("Terminado de enviar o aviso sobre lançamentos vencidos");
 	}
 	
 	private void enviarEmail(String remetente, List<String> destinatarios, String assunto, 

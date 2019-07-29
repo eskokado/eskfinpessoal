@@ -19,12 +19,15 @@ import org.springframework.stereotype.Service;
 
 import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento;
 import br.com.eskinfotechweb.eskfinpessoal.domain.Pessoa;
+import br.com.eskinfotechweb.eskfinpessoal.domain.Usuario;
 import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaCategoria;
 import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaCategoriaTipo;
 import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaDiaTipo;
 import br.com.eskinfotechweb.eskfinpessoal.dto.LancamentoEstatisticaPessoa;
+import br.com.eskinfotechweb.eskfinpessoal.mail.Mailer;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.LancamentoRepository;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.PessoaRepository;
+import br.com.eskinfotechweb.eskfinpessoal.repositories.UsuarioRepository;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.filter.LancamentoFilter;
 import br.com.eskinfotechweb.eskfinpessoal.repositories.lancamentos.projection.ResumoLancamento;
 import br.com.eskinfotechweb.eskfinpessoal.services.exceptions.DataIntegrityException;
@@ -38,30 +41,38 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 @Service
 public class LancamentoService {
 
+	private static final String DESTINATARIOS = "ROLE_PESQUISAR_LANCAMENTOS";
+
 	@Autowired
 	private LancamentoRepository lancamentoRepository;
 
 	@Autowired
 	private PessoaRepository pessoaRepository;
-	
+
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+
+	@Autowired
+	private Mailer mailer;
+
 	public List<Lancamento> findAll() {
 		return lancamentoRepository.findAll();
 	}
-	
+
 	public Lancamento findById(Long id) {
 		Optional<Lancamento> obj = lancamentoRepository.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Lancamento.class.getName()));
 	}
-	
+
 	public List<Lancamento> findVencidos(LocalDate data) {
 		return lancamentoRepository.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(data);
 	}
-	
+
 	public List<Lancamento> search(LancamentoFilter lancamentoFilter) {
 		return lancamentoRepository.search(lancamentoFilter);
 	}
-	
+
 	public Page<Lancamento> page(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		return lancamentoRepository.page(lancamentoFilter, pageable);
 	}
@@ -73,15 +84,15 @@ public class LancamentoService {
 	public List<LancamentoEstatisticaCategoria> porCategoria(LocalDate dataDe, LocalDate dataAte) {
 		return lancamentoRepository.porCategoria(dataDe, dataAte);
 	}
-	
+
 	public List<LancamentoEstatisticaDiaTipo> porDiaTipo(LocalDate dataDe, LocalDate dataAte) {
 		return lancamentoRepository.porDiaTipo(dataDe, dataAte);
 	}
-	
+
 	public List<LancamentoEstatisticaCategoriaTipo> porCategoriaTipo(LocalDate dataDe, LocalDate dataAte) {
 		return lancamentoRepository.porCategoriaTipo(dataDe, dataAte);
 	}
-	
+
 	public Lancamento insert(Lancamento lancamento) {
 		validarPessoa(lancamento);
 		lancamento.setId(null);
@@ -91,14 +102,14 @@ public class LancamentoService {
 
 	private void validarPessoa(Lancamento lancamento) {
 		if (!pessoaRepository.existsById(lancamento.getPessoa().getId())) {
-			throw new PessoaInexistenteOuInativaException("Pessoa Inexistente");			
+			throw new PessoaInexistenteOuInativaException("Pessoa Inexistente");
 		}
-		Pessoa pessoa = pessoaRepository.getOne(lancamento.getPessoa().getId());				
+		Pessoa pessoa = pessoaRepository.getOne(lancamento.getPessoa().getId());
 		if (pessoa.isInativo()) {
 			throw new PessoaInexistenteOuInativaException("Pessoa Inativa");
 		}
 	}
-	
+
 	public Lancamento update(Long id, Lancamento lancamento) {
 		Lancamento lancamentoUpdate = findById(id);
 		if (!lancamento.getPessoa().getId().equals(lancamentoUpdate.getPessoa().getId())) {
@@ -107,18 +118,17 @@ public class LancamentoService {
 		BeanUtils.copyProperties(lancamento, lancamentoUpdate, "id");
 		return lancamentoRepository.save(lancamentoUpdate);
 	}
-	
+
 	public void delete(Long id) {
 		Lancamento lancamento = findById(id);
-		try {			
+		try {
 			lancamentoRepository.delete(lancamento);
-		}
-		catch (DataIntegrityViolationException e) {
+		} catch (DataIntegrityViolationException e) {
 			throw new DataIntegrityException("Não é possível excluir porque há entidades relacionadas! Id: " + id
 					+ ", Tipo: " + Lancamento.class.getName());
 		}
 	}
-	
+
 	public byte[] relatorioPorPessoa(LocalDate dt_inicio, LocalDate dt_fim) throws Exception {
 		List<LancamentoEstatisticaPessoa> dados = lancamentoRepository.porPessoa(dt_inicio, dt_fim);
 
@@ -127,20 +137,27 @@ public class LancamentoService {
 		parametros.put("DT_FIM", Date.valueOf(dt_fim));
 		parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
 
-		InputStream inputStream = this.getClass().getResourceAsStream(
-				"/relatorios/lancamentos-por-pessoa.jasper");
+		InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/lancamentos-por-pessoa.jasper");
 
-		JasperPrint jasperPrint = JasperFillManager.fillReport(
-				inputStream, parametros, new JRBeanCollectionDataSource(dados));
+		JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
+				new JRBeanCollectionDataSource(dados));
 
 		return JasperExportManager.exportReportToPdf(jasperPrint);
 
 	}
-	
-	// @Scheduled(fixedDelay = 1000 * 2)
+
+	// @Scheduled(fixedDelay = 1000 * 60)
 	@Scheduled(cron = "0 59 09 * * *")
 	public void avisarSobreLancamentosVencidos() {
-		System.out.println("Método sendo executado");
+		List<Lancamento> vencidos = lancamentoRepository
+				.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+
+		List<Usuario> destinatarios = usuarioRepository.findByPermissoesDescricao(DESTINATARIOS);
+
+		mailer.avisarSobreLancamentosVencidos(vencidos, destinatarios);
+
+		System.out.println("Método de aviso sobre lançamentos vencidos executado com sucesso!");
+
 	}
-	
+
 }
