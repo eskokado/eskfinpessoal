@@ -54,6 +54,10 @@ public class LancamentoService {
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Lancamento.class.getName()));
 	}
 	
+	public List<Lancamento> findVencidos(LocalDate data) {
+		return lancamentoRepository.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(data);
+	}
+	
 	public List<Lancamento> search(LancamentoFilter lancamentoFilter) {
 		return lancamentoRepository.search(lancamentoFilter);
 	}
