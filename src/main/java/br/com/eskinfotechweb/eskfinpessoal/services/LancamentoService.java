@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import br.com.eskinfotechweb.eskfinpessoal.domain.Lancamento;
@@ -131,4 +132,11 @@ public class LancamentoService {
 		return JasperExportManager.exportReportToPdf(jasperPrint);
 
 	}
+	
+	// @Scheduled(fixedDelay = 1000 * 2)
+	@Scheduled(cron = "0 59 09 * * *")
+	public void avisarSobreLancamentosVencidos() {
+		System.out.println("Método sendo executado");
+	}
+	
 }
